@@ -4,7 +4,7 @@ import styled from "styled-components/macro";
 import footer from "../../Image/footer-background.png";
 import app from "../../Image/app-store-button.png";
 import google from "../../Image/google-play-button.png";
-import mobile from "../../Image/footer-mobile-app.png";
+import mob from "../../Image/footer-mobile-app.png";
 import {
   FaFacebookSquare,
   FaTwitter,
@@ -13,23 +13,21 @@ import {
 } from "react-icons/fa";
 import { GrInstagram } from "react-icons/gr";
 
-
 const FooterStyle = styled.div`
   width: 100%;
-  height: 650px;
+  height: auto;
+
   .footer-background {
-    width: 100%;
+    height: 100%;
     position: relative;
     z-index: 1;
-    height: 100%;
     background: #000 url(${footer}) no-repeat top;
     background-size: cover;
   }
 
   .container-wrapper {
     width: 100%;
-    height: 650px;
-    position: absolute;
+    height: 100%;
     z-index: 1;
     background-color: rgba(0, 0, 0, 0.95);
     display: flex;
@@ -100,24 +98,26 @@ const FooterStyle = styled.div`
     text-decoration: underline;
   }
 
+  .wrapper {
+    display: flex;
+  }
   .categories-container {
     width: 300px;
     display: flex;
     padding-top: 40px;
     flex-direction: column;
     color: #fff;
-    
   }
-  .categories-title{
+  .categories-title {
     font-size: 22px;
     font-weight: 500;
   }
-  .categories-item{
+  .categories-item {
     font-size: 17px;
     display: flex;
     flex-wrap: wrap;
   }
-  .category-name-container{
+  .category-name-container {
     padding-right: 40px;
     padding-top: 10px;
   }
@@ -146,11 +146,12 @@ const FooterStyle = styled.div`
   .copyright-wrapper {
     width: 1170px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     font-size: 18px;
     font-family: "Open Sans", sans-serif;
     color: #fff;
-    padding: 20px 0px;
+    padding: 20px 10px;
   }
   .copyright-wrapper a {
     color: #fff;
@@ -160,23 +161,40 @@ const FooterStyle = styled.div`
   .copyright-wrapper a:hover {
     text-decoration: underline;
   }
+
+  @media only screen and (max-width: 576px) {
+    .container {
+      flex-direction: column-reverse;
+      margin-left: 20px;
+    }
+    .wrapper {
+      flex-direction: column;
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    .container {
+      flex-direction: column-reverse;
+      margin-left: 20px;
+    }
+  }
 `;
 
 export const Footer = () => {
-  const [category, setCategory] = useState([])
+  const [category, setCategory] = useState([]);
 
   const getCategory = () => {
-    axios.get('https://staging.admin.haavoo.com/api/category')
-    .then((response) => {
-      console.log(response)
-      setCategory(response.data.data)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-  }
+    axios
+      .get("https://staging.admin.haavoo.com/api/category")
+      .then((response) => {
+        console.log(response);
+        setCategory(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-  useEffect(() => getCategory(), [])
+  useEffect(() => getCategory(), []);
 
   return (
     <FooterStyle>
@@ -248,37 +266,33 @@ export const Footer = () => {
                   </ul>
                 </div>
               </div>
-              <div></div>
             </div>
 
-            <div className="categories-container">
-              <div className="categories-title">
-                LISTING BY CATEGORIES
-                </div>
+            <div className="wrapper">
+              <div className="categories-container">
+                <div className="categories-title">LISTING BY CATEGORIES</div>
                 <div className="categories-item">
-                {
-                    Object.values(category).map((categories, id) => (
+                  {Object.values(category).map((categories, id) => (
                     <div className="category-name-container" key={id}>
-                    {categories.name}
+                      {categories.name}
                     </div>
-           ))
-         }
-                
+                  ))}
+                </div>
               </div>
-            </div>
 
-
-            <div className="mobile-app-container">
-              <div className="mobile-app-title">
-                BOOK PROFESSIONALS FROM YOUR PHONE
-              </div>
-              <div className="mobile-app-image">
-                <img src={mobile} alt="" />
+              <div className="mobile-app-container">
+                <div className="mobile-app-title">
+                  BOOK PROFESSIONALS FROM YOUR PHONE
+                </div>
+                <div className="mobile-app-image">
+                  <img src={mob} alt="" />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <div className="copyright-container">
         <div className="copyright-wrapper">
           <div className="copyright-text1">

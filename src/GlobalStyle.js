@@ -7,6 +7,7 @@ const GlobalStyle = createGlobalStyle`
     body{
         margin: 0;
         padding: 0;
+        font-family: Open Sans, sans-serif;
     }
     a{
         text-decoration: none;
@@ -14,5 +15,8 @@ const GlobalStyle = createGlobalStyle`
     li{
         list-style: none;
     }
+    *, :after, :before {
+    box-sizing: border-box;
+}
 `
 export default GlobalStyle

@@ -1,117 +1,123 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components/macro";
-import img1 from "../Image/img1.jpg";
-import img2 from "../Image/img2.jpeg";
-import img3 from "../Image/img3.jpeg";
-import img4 from "../Image/img4.jpg";
-import img5 from "../Image/img5.jpg";
-import img6 from "../Image/img6.jpeg";
-import img7 from "../Image/img7.jpg";
-import img8 from "../Image/img8.jpg";
-import img9 from "../Image/img9.jpg";
-import img10 from "../Image/img10.jpg";
+import { useStoreActions, useStoreState } from "easy-peasy";
+import { NavLink } from "react-router-dom";
 
-const ProductListStyle = styled.div`
-  .product-list-container {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+const BuisnessListStyle = styled.div`
+  .buisness-list-container {
+    align-items: center;
   }
-  .tag-container {
+  .buisness-tag-container {
     width: 100%;
     height: 65px;
     display: flex;
-    justify-content: space-between;
+    cursor: pointer;
+  }
+  .buisness-tag {
+    width: 100%;
+    display: flex;
     font-size: 28px;
     font-weight: 500;
     font-family: "Open Sans", sans-serif;
   }
-  .buisness-tag {
-    flex: 1;
-    background-color: #ff9000;
-    border-radius: 8px 0px 0px 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid lightgrey;
-  }
   .buisness-tag a {
     color: #000;
-  }
-  .deal-tag {
     background-color: #fff;
-    border-radius: 0px 8px 8px 0px;
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid lightgrey;
+    width: 50%;
+    display: block;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 20px;
+    border: 1px solid #d1d1d1;
+    text-decoration: none;
   }
-  .deal-tag a {
-    color: #000;
+  .buisness-tag a:first-child {
+    border-radius: 7px 0 0 7px;
+  }
+  .buisness-tag a:last-child {
+    border-radius: 0 7px 7px 0;
+  }
+  .buisness-tag a.active {
+    background-color: #ff9000;
   }
 
-  .product-list-wrapper {
-    display: flex;
+  .buisness-list-wrapper {
     margin: 20px 0px;
   }
-  .product-list {
-    width: 100%;
-    display: flex;
-    margin: 0;
-    padding: 0;
-    flex-direction: column;
+  .buisness-list {
+    padding-left: 0;
   }
-  .product-list-item {
-    margin-top: 20px;
-    padding: 25px;
-    display: flex;
+  .buisness-list-item {
     background-color: #fff;
-    border-radius: 9px;
-    border: 1px solid lightgrey;
+    padding: 25px;
+    border: 1px solid #d1d1d1;
+    margin-bottom: 20px;
+    border-radius: 8px 8px 8px 8px;
   }
-  .product {
+  .buisness {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
   }
-  .product-image img {
-    height: 240px;
-    width: 400px;
+  .buisness-image-container {
+    flex: 1;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  .buisness-image {
+    display: block;
+    overflow: hidden;
+    height: auto;
+    border-radius: 7px 7px 7px 7px;
+  }
+  .buisness-image img {
+    width: 100%;
     border-radius: 8px;
   }
-  .product-info {
-    height: 240px;
-    margin-left: 30px;
+  .buisness-info-container {
+    flex: 1;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  .buisness-info {
+    height: auto;
+    padding: 0px 30px;
     font-family: "Open Sans", sans-serif;
   }
-  .product-info .title {
+  .buisness-info .title {
     font-size: 24px;
     margin: 0px;
     font-weight: 500;
   }
-  .product-info .category {
+  .buisness-info .category {
     font-size: 18px;
     margin: 5px 0px;
     color: #636363;
   }
-  .product-info .category span {
+  .buisness-info .category span {
     font-weight: 500;
     color: #000;
   }
-  .product-info .area {
+  .buisness-info .area {
     font-size: 18px;
     margin-top: 10px;
     color: #636363;
   }
-  .product-info .area span {
+  .buisness-info .area span {
     font-weight: 500;
     color: #000;
+    margin-right: 5px;
   }
-  .product-info .desc {
+  .buisness-info .desc {
     font-size: 16px;
     color: #636363;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
   }
-  .product-info .button .theme-button {
+  .buisness-info .button .theme-button {
     font-size: 18px;
     width: 260px;
     text-align: center;
@@ -125,277 +131,73 @@ const ProductListStyle = styled.div`
   }
 `;
 
-export const ProductList = () => {
+export const BuisnessList = () => {
+  const fetchBuisnesses = useStoreActions((actions) => actions.fetchBuisnesses);
+  const buisnesses = useStoreState((state) => state.list);
+
+  useEffect(() => fetchBuisnesses(), []);
+
   return (
-    <ProductListStyle>
-      <div className="product-list">
-        <section className="product-list-container">
-          <div className="tag-container">
-            <div className="buisness-tag">
-              <a href="">Buisnesses</a>
-            </div>
-            <div className="deal-tag">
-              <a href="">Deals</a>
-            </div>
+    <BuisnessListStyle>
+      <div className="buisness-list-container">
+        <div className="buisness-tag-container">
+          <div className="buisness-tag">
+            <NavLink to="buisness">Buisnesses</NavLink>
+            <NavLink to="deals">Deals</NavLink>
           </div>
-          <div className="product-list-wrapper">
-            <ul className="product-list">
-              <li className="product-list-item">
-                <div className="product">
-                  <div className="product-image">
-                    <img src={img1} alt="" />
-                  </div>
-                  <div className="product-info">
-                    <p className="title">ADNOX Gents wear</p>
-                    <p className="category">
-                      <span>Category :</span> Clothes
-                    </p>
-                    <p className="area">
-                      <span>Area :</span> Perinthalmanna
-                    </p>
-                    <p className="desc">
-                      Exclusive collections of latest selections. Branded and
-                      semi branded items Complete Gents wear shop...
-                    </p>
-                    <p className="button">
-                      <button className="theme-button">
-                        Show the Contact Details
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </li>
+        </div>
+        <div className="buisness-list-wrapper">
+          <ul className="buisness-list">
+            {buisnesses &&
+              buisnesses.length > 0 &&
+              buisnesses.map((buisness) => (
+                <li className="buisness-list-item" key={buisness.id}>
+                  {console.log("business", buisness)}
+                  <div className="buisness">
+                    <div className="buisness-image-container">
+                      <div className="buisness-image">
+                        <img
+                          src={
+                            "https://staging.admin.haavoo.com/app-images/" +
+                            buisness.medias[0].path
+                          }
+                          alt=""
+                        />
+                      </div>
+                    </div>
 
-              <li className="product-list-item">
-                <div className="product">
-                  <div className="product-image">
-                    <img src={img2} alt="" />
-                  </div>
-                  <div className="product-info">
-                    <p className="title">Kairali Paints</p>
-                    <p className="category">
-                      <span>Category :</span> Paints
-                    </p>
-                    <p className="area">
-                      <span>Area :</span> Edakkara
-                    </p>
-                    <p className="desc">
-                      All sorts of paints available for commercial and
-                      residential. Major paints are Jotun paint, Asian P...
-                    </p>
-                    <p className="button">
-                      <button className="theme-button">
-                        Show the Contact Details
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </li>
+                    <div className="buisness-info-container">
+                      <div className="buisness-info">
+                        <p className="title">{buisness.business_name}</p>
 
-              <li className="product-list-item">
-                <div className="product">
-                  <div className="product-image">
-                    <img src={img3} alt="" />
-                  </div>
-                  <div className="product-info">
-                    <p className="title">Bata</p>
-                    <p className="category">
-                      <span>Category :</span> Footwear
-                    </p>
-                    <p className="area">
-                      <span>Area :</span> Perinthalmanna
-                    </p>
-                    <p className="desc">
-                      All types of shoes, chappals for Gents, ladies, and kids.
-                      Sport shoes Casual Shoes
-                    </p>
-                    <p className="button">
-                      <button className="theme-button">
-                        Show the Contact Details
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </li>
+                        <p className="category">
+                          <span>Category :</span> {buisness.categories[0].name}
+                        </p>
 
-              <li className="product-list-item">
-                <div className="product">
-                  <div className="product-image">
-                    <img src={img4} alt="" />
-                  </div>
-                  <div className="product-info">
-                    <p className="title">MENZ CLUB</p>
-                    <p className="category">
-                      <span>Category :</span> Clothes
-                    </p>
-                    <p className="area">
-                      <span>Area :</span> Kottakkal
-                    </p>
-                    <p className="desc">
-                      complete menz wear branches all over Kerala/UAE/KSA
-                    </p>
-                    <p className="button">
-                      <button className="theme-button">
-                        Show the Contact Details
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </li>
+                        <p className="area">
+                          <span>Area :</span>
+                          {buisness.areas[0].name}
+                        </p>
 
-              <li className="product-list-item">
-                <div className="product">
-                  <div className="product-image">
-                    <img src={img5} alt="" />
+                        <p
+                          className="desc"
+                          dangerouslySetInnerHTML={{
+                            __html: buisness.description,
+                          }}
+                        ></p>
+                        <p className="button">
+                          <button className="theme-button">
+                            Show the Contact Details
+                          </button>
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="product-info">
-                    <p className="title">ORGIN</p>
-                    <p className="category">
-                      <span>Category :</span>Mobiles & Laptop
-                    </p>
-                    <p className="area">
-                      <span>Area :</span> Calicut
-                    </p>
-                    <p className="desc">
-                      Mobile Sales, Services and Accessories.
-                    </p>
-                    <p className="button">
-                      <button className="theme-button">
-                        Show the Contact Details
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </li>
-
-              <li className="product-list-item">
-                <div className="product">
-                  <div className="product-image">
-                    <img src={img6} alt="" />
-                  </div>
-                  <div className="product-info">
-                    <p className="title">AL-FYMS</p>
-                    <p className="category">
-                      <span>Category :</span> Financial Services
-                    </p>
-                    <p className="area">
-                      <span>Area :</span> Calicut
-                    </p>
-                    <p className="desc">
-                      Available Foreign Money Exchange Facility.
-                    </p>
-                    <p className="button">
-                      <button className="theme-button">
-                        Show the Contact Details
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </li>
-
-              <li className="product-list-item">
-                <div className="product">
-                  <div className="product-image">
-                    <img src={img7} alt="" />
-                  </div>
-                  <div className="product-info">
-                    <p className="title">my mobile</p>
-                    <p className="category">
-                      <span>Category :</span>Mobiles & Laptop
-                    </p>
-                    <p className="area">
-                      <span>Area :</span>Calicut
-                    </p>
-                    <p className="desc">
-                      Mobile Sales, Services and Accessories.
-                    </p>
-                    <p className="button">
-                      <button className="theme-button">
-                        Show the Contact Details
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </li>
-
-              <li className="product-list-item">
-                <div className="product">
-                  <div className="product-image">
-                    <img src={img8} alt="" />
-                  </div>
-                  <div className="product-info">
-                    <p className="title">MARKAZ AL ATTAR</p>
-                    <p className="category">
-                      <span>Category :</span> Perfumes
-                    </p>
-                    <p className="area">
-                      <span>Area :</span> Calicut
-                    </p>
-                    <p className="desc">
-                      Available Agar Oodh, All Kinds of Indian Perfumes, Attars.
-                    </p>
-                    <p className="button">
-                      <button className="theme-button">
-                        Show the Contact Details
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </li>
-
-              <li className="product-list-item">
-                <div className="product">
-                  <div className="product-image">
-                    <img src={img9} alt="" />
-                  </div>
-                  <div className="product-info">
-                    <p className="title">Radix Cell Phone Care Centre</p>
-                    <p className="category">
-                      <span>Category :</span> Mobiles & Laptop
-                    </p>
-                    <p className="area">
-                      <span>Area :</span> Calicut
-                    </p>
-                    <p className="desc">
-                      Mobile Sales, Services and Accessories.
-                    </p>
-                    <p className="button">
-                      <button className="theme-button">
-                        Show the Contact Details
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </li>
-
-              <li className="product-list-item">
-                <div className="product">
-                  <div className="product-image">
-                    <img src={img10} alt="" />
-                  </div>
-                  <div className="product-info">
-                    <p className="title">CELL ZONE | SPARE ZONE</p>
-                    <p className="category">
-                      <span>Category :</span> Mobiles & Laptop
-                    </p>
-                    <p className="area">
-                      <span>Area :</span> Calicut
-                    </p>
-                    <p className="desc">
-                      Mobile Sales, Services and Accessories.
-                    </p>
-                    <p className="button">
-                      <button className="theme-button">
-                        Show the Contact Details
-                      </button>
-                    </p>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </section>
+                </li>
+              ))}
+          </ul>
+        </div>
       </div>
-    </ProductListStyle>
+    </BuisnessListStyle>
   );
 };

@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components/macro";
 import cover from "../../Image/cover.jpg";
 import logo from "../../Image/logo.png";
@@ -6,15 +5,20 @@ import { MdLocationOn } from "react-icons/md";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { NavLink } from "react-router-dom";
 import { FiSearch } from "react-icons/fi";
+import { mobile } from "../../responsive";
+import { tab } from "../../responsive";
+import { MobileView } from "./MobileView/MobileView";
+import { useStoreActions } from "easy-peasy";
 
 const NavbarStyle = styled.div`
   width: 100%;
-  height: 235px;
+  height: auto;
   top: 0;
   right: 0;
   left: 0;
   bottom: 0;
   position: relative;
+  z-index: 3;
   font-family: Open Sans, sans-serif;
 `;
 const Background = styled.div`
@@ -23,8 +27,8 @@ const Background = styled.div`
   background-size: cover;
   background-image: linear-gradient(180deg, #000, transparent), url(${cover});
   position: absolute;
-  z-index: 1;
-  height: 235px;
+  z-index: 3;
+  height: 100%;
 `;
 const Top = styled.div`
   position: relative;
@@ -37,7 +41,7 @@ const TopContainer = styled.div`
   margin: 10px;
 `;
 const TopStrip = styled.div`
-  width: 72%;
+  width: 1170px;
   display: block;
   display: flex;
   align-items: center;
@@ -47,11 +51,22 @@ const TopStrip = styled.div`
   font-weight: 400;
   color: #fff;
 `;
-const CustomerCare = styled.span``;
+const MobView = styled.div`
+  display: none;
+  width: 100%;
+  ${mobile({ display: "flex" })}
+  ${tab({ display: "flex" })}
+`;
+const CustomerCare = styled.span`
+  ${mobile({ display: "none" })}
+  ${tab({ display: "none" })}
+`;
 const Location = styled.div`
   display: flex;
   align-items: center;
   padding: 5px;
+  ${mobile({ display: "none" })}
+  ${tab({ display: "none" })}
 `;
 const Icon = styled.div`
   margin: 0px 5px;
@@ -82,25 +97,32 @@ const CenterContainer = styled.div`
   width: 1170px;
   margin: 10px;
   display: flex;
-  align-items: center;
   justify-content: space-around;
 `;
 const Left = styled.div`
   height: 100%;
   flex: 1;
+  ${mobile({ display: "flex", justifyContent: "center" })}
+  ${tab({ display: "flex", justifyContent: "center" })}
 `;
 const Logo = styled.a`
   display: flex;
-  align-items: center;
+  z-index: 3;
+  ${mobile({ height: "80px" })}
+  ${tab({ height: "80px" })}
 `;
 const Img = styled.img`
   height: 55px;
+  ${mobile({ height: "45px" })}
+  ${tab({ height: "45px" })}
 `;
 const Middle = styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-end;
   margin-right: 0;
+  ${mobile({ display: "none" })}
+  ${tab({ display: "none" })}
 `;
 const Item = styled.ul`
   a {
@@ -116,6 +138,8 @@ const Right = styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-end;
+  ${mobile({ display: "none" })}
+  ${tab({ display: "none" })}
 `;
 const RegisterButton = styled.button`
   border: none;
@@ -142,8 +166,8 @@ const LoginButton = styled.button`
 const Bottom = styled.div`
   width: 100%;
   position: relative;
-  height: 90px;
-  z-index: 2;
+  height: auto;
+  z-index: 3;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
@@ -160,19 +184,18 @@ const Bottom = styled.div`
     width: 1170px;
     height: 100%;
     display: flex;
+    margin: 5px;
     align-items: center;
     flex-wrap: wrap;
-    margin-right: -5px;
-    margin-left: -5px;
   }
   .area-search-container {
-    height: 70%;
-    margin-right: 20px;
-    width: 500px;
+    height: 60px;
+    flex: 2;
+    margin: 8px;
     display: flex;
     align-items: center;
     background-color: #fff;
-    border-radius: 15px;
+    border-radius: 12px;
     cursor: pointer;
   }
   .area-search-inner-text {
@@ -191,8 +214,9 @@ const Bottom = styled.div`
     color: lightgrey;
   }
   .random-search-container {
-    flex: 1;
-    height: 70%;
+    height: 60px;
+    flex: 3;
+    margin: 8px;
     display: flex;
     justify-content: space-between;
   }
@@ -203,7 +227,7 @@ const Bottom = styled.div`
     font-family: "Open Sans", sans-serif;
     font-size: 18px;
     background-color: #fff;
-    border-radius: 15px 0px 0px 15px;
+    border-radius: 12px 0px 0px 12px;
   }
   .search-button {
     width: 70px;
@@ -211,14 +235,53 @@ const Bottom = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 0px 15px 15px 0px;
+    border-radius: 0px 12px 12px 0px;
     background-color: #e51c1c;
     border: none;
     color: #fff;
   }
+
+  @media only screen and (max-width: 576px) {
+    .container {
+      max-width: 540px;
+      display: block;
+    }
+    .area-search-container {
+      height: 50px;
+    }
+    .random-search-container {
+      height: 50px;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .container {
+      max-width: 720px;
+    }
+    .area-search-container {
+      height: 50px;
+    }
+    .random-search-container {
+      height: 50px;
+    }
+  }
 `;
 
 export const Navbar = () => {
+  const fetchSearchBuisnesses = useStoreActions(
+    (action) => action.fetchSearchBuisnesses
+  );
+
+  var searchValue;
+
+  const setSearch = (value) => {
+    searchValue = value;
+  };
+
+  const searchBuisnesses = () => {
+    fetchSearchBuisnesses(searchValue);
+  };
+
   return (
     <NavbarStyle>
       <Background />
@@ -236,6 +299,10 @@ export const Navbar = () => {
                 <IoMdArrowDropdown />
               </LocationButton>
             </Location>
+
+            <MobView>
+              <MobileView />
+            </MobView>
           </TopStrip>
         </TopContainer>
       </Top>
@@ -281,8 +348,16 @@ export const Navbar = () => {
               <input
                 className="random-search-input"
                 placeholder="Search for anything"
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
               ></input>
-              <button className="search-button">
+              <button
+                className="search-button"
+                onClick={() => {
+                  searchBuisnesses();
+                }}
+              >
                 <FiSearch />
               </button>
             </div>
