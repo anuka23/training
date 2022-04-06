@@ -21,10 +21,11 @@ const CategoryListStyle = styled.div`
   }
 `;
 
-export const CategoryList = () => {
+export const CategoryList = ({ searchUpdatedCategories }) => {
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
-  const fetchCategories = useStoreActions((actions) => actions.fetchCategories);
+
+  // const fetchCategories = useStoreActions((actions) => actions.fetchCategories);
 
   const getCategory = () => {
     axios
@@ -50,7 +51,7 @@ export const CategoryList = () => {
       newValue.push(value);
     }
     setChecked(newValue);
-    fetchCategories(newValue);
+    searchUpdatedCategories(newValue);
   };
 
   return (

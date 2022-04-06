@@ -31,10 +31,9 @@ const AreaStyle = styled.div`
   }
 `;
 
-export const Area = () => {
+export const Area = ({ searchUpdatedAreas }) => {
   const [areas, setAreas] = useState([]);
   const [checked, setChecked] = useState([]);
-  const fetchAreas = useStoreActions((actions) => actions.fetchAreas);
 
   const getAreas = () => {
     axios
@@ -54,13 +53,13 @@ export const Area = () => {
     const currentValue = checked.indexOf(value);
     const newValue = [...checked];
 
-    if (checked.includes(currentValue)) {
+    if (checked.includes(value)) {
       newValue.splice(currentValue, 1);
     } else {
       newValue.push(value);
     }
     setChecked(newValue);
-    fetchAreas(newValue);
+    searchUpdatedAreas(newValue);
   };
 
   return (

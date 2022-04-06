@@ -7,6 +7,9 @@ import { BuisnessList } from "../BuisnessList";
 import { CategoryList } from "../CategoryList";
 import { mobile } from "../../responsive";
 import { tab } from "../../responsive";
+import { Sort } from "../Sort";
+import { useState, useEffect } from "react";
+import { useStoreActions } from "easy-peasy";
 
 const BodyStyle = styled.div`
   width: 100%;
@@ -183,6 +186,21 @@ const BodyStyle = styled.div`
 `;
 
 export const Body = () => {
+  const [updatedCategories, setUpdatedCategories] = useState([]);
+  const [updatedAreas, setUpdatedAreas] = useState([]);
+  const fetchBuisnesses = useStoreActions((actions) => actions.fetchBuisnesses);
+
+  const searchUpdatedCategories = (updatedValue) => {
+    setUpdatedCategories(updatedValue);
+    fetchBuisnesses(updatedValue);
+    console.log("categories", updatedValue);
+  };
+
+  const searchUpdatedAreas = (updatedValue) => {
+    setUpdatedAreas(updatedValue);
+    fetchBuisnesses(updatedValue);
+    console.log("Areas", updatedValue);
+  };
   return (
     <BodyStyle>
       <div className="filter-container-wrapper">
@@ -195,18 +213,7 @@ export const Body = () => {
               <BiSortAlt2 />
               Sort By
               <IoMdArrowDropdown />
-              <ul className="sort-option">
-                <li className="sort-option-item">
-                  <a className="sort-option-item-name" href="">
-                    Relevence
-                  </a>
-                </li>
-                <li className="sort-option-item">
-                  <a className="sort-option-item-name" href="">
-                    Popularity
-                  </a>
-                </li>
-              </ul>
+              {/* <Sort /> */}
             </button>
           </div>
         </div>
@@ -239,7 +246,10 @@ export const Body = () => {
                   <h3>Category</h3>
                 </div>
                 <div className="category-select-option">
-                  <CategoryList />
+                  <CategoryList
+                    updatedCategories={updatedCategories}
+                    searchUpdatedCategories={searchUpdatedCategories}
+                  />
                 </div>
               </div>
 
@@ -248,7 +258,10 @@ export const Body = () => {
                   <h3>Area</h3>
                 </div>
                 <div className="area-select-option">
-                  <Area />
+                  <Area
+                    updatedAreas={updatedAreas}
+                    searchUpdatedAreas={searchUpdatedAreas}
+                  />
                 </div>
               </div>
             </div>
