@@ -10,6 +10,10 @@ import { tab } from "../../responsive";
 import { Sort } from "../Sort";
 import { useState, useEffect } from "react";
 import { useStoreActions } from "easy-peasy";
+import { Navbar } from "../Header/Navbar";
+import { NavLink, Route, Routes } from "react-router-dom";
+import { DealsList } from "../DealsList";
+import { Footer } from "../Footer/Footer";
 
 const BodyStyle = styled.div`
   width: 100%;
@@ -50,10 +54,6 @@ const BodyStyle = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .sort-option {
-    display: none;
   }
 
   .content-wrapper {
@@ -143,8 +143,43 @@ const BodyStyle = styled.div`
   }
 
   .product-container {
+    width: 100%;
     display: block;
     padding: 0px 10px;
+  }
+  .buisness-tag-container {
+    width: 100%;
+    height: 65px;
+    display: flex;
+    cursor: pointer;
+  }
+  .buisness-tag {
+    width: 100%;
+    display: flex;
+    font-size: 28px;
+    font-weight: 500;
+    font-family: "Open Sans", sans-serif;
+  }
+  .buisness-tag a {
+    color: #000;
+    background-color: #fff;
+    width: 50%;
+    display: block;
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 20px;
+    border: 1px solid #d1d1d1;
+    text-decoration: none;
+  }
+  .buisness-tag a:first-child {
+    border-radius: 7px 0 0 7px;
+  }
+  .buisness-tag a:last-child {
+    border-radius: 0 7px 7px 0;
+  }
+  .buisness-tag a.active {
+    background-color: #ff9000;
   }
 
   .product-list-page {
@@ -186,35 +221,87 @@ const BodyStyle = styled.div`
 `;
 
 export const Body = () => {
-  const [updatedCategories, setUpdatedCategories] = useState([]);
-  const [updatedAreas, setUpdatedAreas] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [checked, setChecked] = useState([]);
   const fetchBuisnesses = useStoreActions((actions) => actions.fetchBuisnesses);
+  const fetchDeals = useStoreActions((actions) => actions.fetchDeals);
 
-  const searchUpdatedCategories = (updatedValue) => {
-    setUpdatedCategories(updatedValue);
-    fetchBuisnesses(updatedValue);
-    console.log("categories", updatedValue);
+  const searchType = (value) => {
+    const currentValue = checked.indexOf(value);
+    const newValue = [...checked];
+
+    if (checked.includes(value)) {
+      newValue.splice(currentValue, 1);
+    } else {
+      newValue.push(value);
+    }
+    setChecked(newValue);
+    searchUpdatedType(newValue);
   };
 
-  const searchUpdatedAreas = (updatedValue) => {
-    setUpdatedAreas(updatedValue);
-    fetchBuisnesses(updatedValue);
-    console.log("Areas", updatedValue);
+  const [updatedValue, setUpdatedValue] = useState({
+    categories: [""],
+    areas: [""],
+    sort: "",
+    search_query: "",
+    type: [""],
+  });
+
+  const searchUpdatedType = (value) => {
+    const updatedValueNew = { ...updatedValue };
+    updatedValueNew.type = value;
+    setUpdatedValue(updatedValueNew);
   };
+
+  const searchUpdatedInput = (value) => {
+    const updatedValueNew = { ...updatedValue };
+    updatedValueNew.search_query = value;
+    setUpdatedValue(updatedValueNew);
+  };
+
+  const searchUpdatedCategories = (value) => {
+    const updatedValueNew = { ...updatedValue };
+    updatedValueNew.categories = value;
+    setUpdatedValue(updatedValueNew);
+  };
+
+  const searchUpdatedAreas = (value) => {
+    const updatedValueNew = { ...updatedValue };
+    updatedValueNew.areas = value;
+    setUpdatedValue(updatedValueNew);
+  };
+
+  const sort = (value) => {
+    const updatedValueNew = { ...updatedValue };
+    updatedValueNew.sort = value;
+    setUpdatedValue(updatedValueNew);
+  };
+
+  useEffect(() => {
+    fetchBuisnesses(updatedValue);
+  }, [updatedValue]);
+
   return (
     <BodyStyle>
+      <Navbar searchUpdatedInput={searchUpdatedInput} />
       <div className="filter-container-wrapper">
         <div className="filter-wrapper">
           <div className="filter-container">
             <div className="filter-button">Filter</div>
           </div>
           <div className="sort-continer">
-            <button className="sort-button">
+            <div
+              className="sort-button"
+              isOpen={isOpen}
+              onClick={() => setIsOpen(!isOpen)}
+            >
               <BiSortAlt2 />
               Sort By
               <IoMdArrowDropdown />
-              {/* <Sort /> */}
-            </button>
+              {isOpen && (
+                <Sort isOpen={isOpen} setIsOpen={setIsOpen} sort={sort} />
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -229,12 +316,30 @@ export const Body = () => {
                 </div>
                 <div className="type-buisness-item">
                   <form>
-                    <div className="checkbox-option">
-                      <input className="checkbox-input" type="checkbox"></input>
+                    <div
+                      className="checkbox-option"
+                      onChange={(e) => {
+                        searchType(e.target.value);
+                      }}
+                    >
+                      <input
+                        className="checkbox-input"
+                        type="checkbox"
+                        value="Individual"
+                      ></input>
                       <label className="checkbox-label">Individual</label>
                     </div>
-                    <div className="checkbox-option">
-                      <input className="checkbox-input" type="checkbox"></input>
+                    <div
+                      className="checkbox-option"
+                      onChange={(e) => {
+                        searchType(e.target.value);
+                      }}
+                    >
+                      <input
+                        className="checkbox-input"
+                        type="checkbox"
+                        value="Shop_Office"
+                      ></input>
                       <label className="checkbox-label">Shop/Office</label>
                     </div>
                   </form>
@@ -247,7 +352,6 @@ export const Body = () => {
                 </div>
                 <div className="category-select-option">
                   <CategoryList
-                    updatedCategories={updatedCategories}
                     searchUpdatedCategories={searchUpdatedCategories}
                   />
                 </div>
@@ -258,17 +362,24 @@ export const Body = () => {
                   <h3>Area</h3>
                 </div>
                 <div className="area-select-option">
-                  <Area
-                    updatedAreas={updatedAreas}
-                    searchUpdatedAreas={searchUpdatedAreas}
-                  />
+                  <Area searchUpdatedAreas={searchUpdatedAreas} />
                 </div>
               </div>
             </div>
           </aside>
 
           <div className="product-container">
-            <BuisnessList />
+            <div className="buisness-tag-container">
+              <div className="buisness-tag">
+                <NavLink to="buisnesslist">Buisnesses</NavLink>
+                <NavLink to="deals">Deals</NavLink>
+              </div>
+            </div>
+
+            <Routes>
+              <Route path="buisnesslist" element={<BuisnessList />} />
+              <Route path="deals" element={<DealsList />} />
+            </Routes>
           </div>
         </div>
       </div>
@@ -279,6 +390,7 @@ export const Body = () => {
           <div className="product-list-page-number"></div>
         </div>
       </div>
+      <Footer />
     </BodyStyle>
   );
 };

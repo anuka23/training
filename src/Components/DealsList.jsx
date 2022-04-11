@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components/macro";
 import { useStoreActions, useStoreState } from "easy-peasy";
+import { useEffect } from "react";
+import React from "react";
+import styled from "styled-components";
 
 const DealsListStyle = styled.div`
   .deals-list-container {
     align-items: center;
   }
+
   .deals-list-wrapper {
     margin: 20px 0px;
   }
@@ -96,10 +98,12 @@ const DealsListStyle = styled.div`
 `;
 
 export const DealsList = () => {
+  const deals = useStoreState((state) => state.dealslist);
   const fetchDeals = useStoreActions((actions) => actions.fetchDeals);
-  const deals = useStoreState((state) => state.list);
 
-  useEffect(() => fetchBuisnesses(), []);
+  useEffect(() => {
+    fetchDeals();
+  }, []);
 
   return (
     <DealsListStyle>
@@ -116,7 +120,7 @@ export const DealsList = () => {
                         <img
                           src={
                             "https://staging.admin.haavoo.com/app-images/" +
-                            deal.medias[0].path
+                            deal?.medias[0]?.path
                           }
                           alt=""
                         />
@@ -125,21 +129,21 @@ export const DealsList = () => {
 
                     <div className="deals-info-container">
                       <div className="deals-info">
-                        <p className="title">{deal.business_name}</p>
+                        <p className="title">{deal?.business_name}</p>
 
                         <p className="category">
-                          <span>Category :</span> {deal.categories[0].name}
+                          <span>Category :</span> {deal?.categories[0]?.name}
                         </p>
 
                         <p className="area">
                           <span>Area :</span>
-                          {deal.areas[0].name}
+                          {deal?.areas[0]?.name}
                         </p>
 
                         <p
                           className="desc"
                           dangerouslySetInnerHTML={{
-                            __html: deal.description,
+                            __html: deal?.description,
                           }}
                         ></p>
                         <p className="button">

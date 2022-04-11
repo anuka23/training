@@ -10,31 +10,25 @@ const store = createStore({
   fetchBuisnesses: thunk(async (actions, payload) => {
     console.log("payload", payload);
     const { data } = await axios.get(
-      `https://staging.admin.haavoo.com/api/business?city=&area=&search_query=&page=1&type=&category=&sort=&lat=19.1168512&lng=72.8858624`
+      `https://staging.admin.haavoo.com/api/business?city=ernakulam&area=${payload.areas.join()}&search_query=${
+        payload.search_query
+      }&page=1&type=${
+        payload.type
+      }&category=${payload.categories.join()}&sort=&lat=19.1168512&lng=72.8858624`
     );
     actions.saveBuisnesses(data?.data?.data);
   }),
 
-  // fetchSearchBuisnesses : action((payload) => {
-  //   state.list = state.list.filter();
-  // }),
-  fetchSearchBuisnesses: thunk(async (actions, payload) => {
-    const { data } = await axios.get(
-      `https://staging.admin.haavoo.com/api/business?search_query=${payload}`
-    );
-    actions.saveBuisnesses(data?.data?.data);
+  dealslist: null,
+  saveDeals: action((state, payload) => {
+    state.dealslist = payload;
   }),
-  // fetchCategories: thunk(async (actions, payload) => {
-  //   const { data } = await axios.get(
-  //     `https://staging.admin.haavoo.com/api/business?category=${payload}`
-  //   );
-  //   actions.saveBuisnesses(data?.data?.data);
-  // }),
-  fetchAreas: thunk(async (actions, payload) => {
+  fetchDeals: thunk(async (actions, payload) => {
+    console.log("payload", payload);
     const { data } = await axios.get(
-      `https://staging.admin.haavoo.com/api/business?area=${payload}`
+      `https://staging.admin.haavoo.com/api/deals?city=&area=&query=&page=1&type=&category=${payload.categories.join()}&sort=&pageSize=`
     );
-    actions.saveBuisnesses(data?.data?.data);
+    actions.saveDeals(data?.data?.data);
   }),
 });
 

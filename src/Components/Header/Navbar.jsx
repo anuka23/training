@@ -1,4 +1,5 @@
 import styled from "styled-components/macro";
+import { useState } from "react";
 import cover from "../../Image/cover.jpg";
 import logo from "../../Image/logo.png";
 import { MdLocationOn } from "react-icons/md";
@@ -8,7 +9,7 @@ import { FiSearch } from "react-icons/fi";
 import { mobile } from "../../responsive";
 import { tab } from "../../responsive";
 import { MobileView } from "./MobileView/MobileView";
-import { useStoreActions } from "easy-peasy";
+import { CitySearch } from "../CitySearch/CitySearch";
 
 const NavbarStyle = styled.div`
   width: 100%;
@@ -85,6 +86,7 @@ const LocationButton = styled.button`
   display: flex;
   align-items: center;
   font-size: 16px;
+  cursor: pointer;
 `;
 const Center = styled.div`
   position: relative;
@@ -267,11 +269,8 @@ const Bottom = styled.div`
   }
 `;
 
-export const Navbar = () => {
-  const fetchSearchBuisnesses = useStoreActions(
-    (action) => action.fetchSearchBuisnesses
-  );
-
+export const Navbar = ({ searchUpdatedInput }) => {
+  const [openModal, setOpenModal] = useState(false);
   var searchValue;
 
   const setSearch = (value) => {
@@ -279,7 +278,7 @@ export const Navbar = () => {
   };
 
   const searchBuisnesses = () => {
-    fetchSearchBuisnesses(searchValue);
+    searchUpdatedInput(searchValue);
   };
 
   return (
@@ -294,10 +293,13 @@ export const Navbar = () => {
                 <MdLocationOn />
               </Icon>
               <Desc>Select Location</Desc>
-              <LocationButton>
+              <LocationButton onClick={() => setOpenModal(true)}>
                 Ernakulam
                 <IoMdArrowDropdown />
               </LocationButton>
+              {openModal && (
+                <CitySearch openModal={openModal} setOpenModal={setOpenModal} />
+              )}
             </Location>
 
             <MobView>

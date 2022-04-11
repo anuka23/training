@@ -1,45 +1,10 @@
-import React, { useState, useEffect } from "react";
 import styled from "styled-components/macro";
+import { useEffect } from "react";
 import { useStoreActions, useStoreState } from "easy-peasy";
-import { NavLink } from "react-router-dom";
 
 const BuisnessListStyle = styled.div`
   .buisness-list-container {
     align-items: center;
-  }
-  .buisness-tag-container {
-    width: 100%;
-    height: 65px;
-    display: flex;
-    cursor: pointer;
-  }
-  .buisness-tag {
-    width: 100%;
-    display: flex;
-    font-size: 28px;
-    font-weight: 500;
-    font-family: "Open Sans", sans-serif;
-  }
-  .buisness-tag a {
-    color: #000;
-    background-color: #fff;
-    width: 50%;
-    display: block;
-    font-size: 24px;
-    font-weight: 600;
-    text-align: center;
-    padding: 12px 20px;
-    border: 1px solid #d1d1d1;
-    text-decoration: none;
-  }
-  .buisness-tag a:first-child {
-    border-radius: 7px 0 0 7px;
-  }
-  .buisness-tag a:last-child {
-    border-radius: 0 7px 7px 0;
-  }
-  .buisness-tag a.active {
-    background-color: #ff9000;
   }
 
   .buisness-list-wrapper {
@@ -132,20 +97,16 @@ const BuisnessListStyle = styled.div`
 `;
 
 export const BuisnessList = () => {
-  const fetchBuisnesses = useStoreActions((actions) => actions.fetchBuisnesses);
   const buisnesses = useStoreState((state) => state.list);
+  const fetchBuisnesses = useStoreActions((actions) => actions.fetchBuisnesses);
 
-  useEffect(() => fetchBuisnesses(), []);
+  useEffect(() => {
+    fetchBuisnesses();
+  }, []);
 
   return (
     <BuisnessListStyle>
       <div className="buisness-list-container">
-        <div className="buisness-tag-container">
-          <div className="buisness-tag">
-            <NavLink to="buisness">Buisnesses</NavLink>
-            <NavLink to="deals">Deals</NavLink>
-          </div>
-        </div>
         <div className="buisness-list-wrapper">
           <ul className="buisness-list">
             {buisnesses &&
@@ -158,7 +119,7 @@ export const BuisnessList = () => {
                         <img
                           src={
                             "https://staging.admin.haavoo.com/app-images/" +
-                            buisness.medias[0].path
+                            buisness?.medias[0]?.path
                           }
                           alt=""
                         />
@@ -167,21 +128,22 @@ export const BuisnessList = () => {
 
                     <div className="buisness-info-container">
                       <div className="buisness-info">
-                        <p className="title">{buisness.business_name}</p>
+                        <p className="title">{buisness?.business_name}</p>
 
                         <p className="category">
-                          <span>Category :</span> {buisness.categories[0].name}
+                          <span>Category :</span>{" "}
+                          {buisness?.categories[0]?.name}
                         </p>
 
                         <p className="area">
                           <span>Area :</span>
-                          {buisness.areas[0].name}
+                          {buisness?.areas[0]?.name}
                         </p>
 
                         <p
                           className="desc"
                           dangerouslySetInnerHTML={{
-                            __html: buisness.description,
+                            __html: buisness?.description,
                           }}
                         ></p>
                         <p className="button">
