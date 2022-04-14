@@ -39,7 +39,7 @@ export const Sort = ({ isOpen, setIsOpen, sort }) => {
         <ul className="sort-option">
           <li className="sort-option-item">
             <NavLink
-              to=""
+              to="#"
               onClick={() => {
                 sortItem("relevence");
               }}
@@ -49,7 +49,7 @@ export const Sort = ({ isOpen, setIsOpen, sort }) => {
           </li>
           <li className="sort-option-item">
             <NavLink
-              to=""
+              to="#"
               onClick={() => {
                 sortItem("popularity");
               }}
@@ -59,7 +59,7 @@ export const Sort = ({ isOpen, setIsOpen, sort }) => {
           </li>
           <li className="sort-option-item">
             <NavLink
-              to=""
+              to="#"
               onClick={() => {
                 sortItem("distance");
               }}

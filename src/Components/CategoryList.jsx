@@ -2,6 +2,7 @@ import axios from "axios";
 import { useStoreActions } from "easy-peasy";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components/macro";
+import { RiArrowDropDownLine } from "react-icons/ri";
 
 const CategoryListStyle = styled.div`
   .category-name-container {
@@ -19,6 +20,9 @@ const CategoryListStyle = styled.div`
     font-size: 18px;
     padding: 0px 5px;
   }
+  .category-drop-down-arrow {
+    text-align: end;
+  }
 `;
 
 export const CategoryList = ({ searchUpdatedCategories }) => {
@@ -32,7 +36,7 @@ export const CategoryList = ({ searchUpdatedCategories }) => {
       .get("https://staging.admin.haavoo.com/api/category")
       .then((response) => {
         console.log(response);
-        setCategories(response.data.data);
+        setCategories(response?.data?.data);
       })
       .catch((error) => {
         console.log(error);
@@ -57,18 +61,32 @@ export const CategoryList = ({ searchUpdatedCategories }) => {
   return (
     <CategoryListStyle>
       <div className="category-container">
-        {Object.values(categories).map((category, id) => (
-          <div className="category-name-container" key={id}>
-            <input
-              className="category-checkbox"
-              type="checkbox"
-              onChange={() => {
-                searchCategories(category.slug);
-              }}
-            ></input>
-            <div className="category-name">{category.name}</div>
-          </div>
-        ))}
+        {categories &&
+          categories.map((category, id) => (
+            <div className="category-name-container" key={id}>
+              <input
+                className="category-checkbox"
+                type="checkbox"
+                onChange={() => {
+                  searchCategories(category.slug);
+                }}
+              ></input>
+              <div className="category-name">{category.name}</div>
+              <div className="category-drop-down-arrow">
+                <RiArrowDropDownLine />
+              </div>
+
+              <div
+                className="category-drop-down-container"
+                key={category.child.id}
+              >
+                <input type="checkbox"></input>
+                <div className="category-drop-down-name">
+                  {category?.child?.name}
+                </div>
+              </div>
+            </div>
+          ))}
       </div>
     </CategoryListStyle>
   );

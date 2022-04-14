@@ -95,23 +95,24 @@ const DealsListStyle = styled.div`
     box-shadow: 3px 3px 3px rgb(0 0 0 / 20%);
     padding: 8px 0px;
   }
+  .deals-no-item-text {
+    text-align: center;
+    margin-top: 50px;
+  }
 `;
 
-export const DealsList = () => {
+export const DealsList = ({ updatedValue }) => {
   const deals = useStoreState((state) => state.dealslist);
   const fetchDeals = useStoreActions((actions) => actions.fetchDeals);
 
-  useEffect(() => {
-    fetchDeals();
-  }, []);
+  useEffect(() => fetchDeals(updatedValue), [updatedValue]);
 
   return (
     <DealsListStyle>
       <div className="deals-list-container">
         <div className="deals-list-wrapper">
           <ul className="deals-list">
-            {deals &&
-              deals.length > 0 &&
+            {deals && deals.length > 0 ? (
               deals.map((deal) => (
                 <li className="deals-list-item" key={deal.id}>
                   <div className="deals">
@@ -155,7 +156,10 @@ export const DealsList = () => {
                     </div>
                   </div>
                 </li>
-              ))}
+              ))
+            ) : (
+              <div className="deals-no-item-text">Sorry, no result found.</div>
+            )}
           </ul>
         </div>
       </div>

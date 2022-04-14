@@ -1,34 +1,38 @@
-import React from "react";
-import { FaSearch } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { GrClose } from "react-icons/gr";
 import styled from "styled-components";
 import img1 from "../../Image/1610718616.png";
 import img2 from "../../Image/1610718681.png";
 import img3 from "../../Image/1610718645.png";
 import img4 from "../../Image/1610718655.png";
 import img5 from "../../Image/1610718666.png";
+import axios from "axios";
 
 const CitySearchStyle = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+
   .city-modal-background {
-    height: 100vh;
-    width: 100%;
+    background-color: #00000076;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px 10px 10px 10px;
+    width: 100vw;
+    height: 100vh;
   }
   .city-modal-container {
     display: flex;
     flex-direction: column;
-    position: relative;
     width: 800px;
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 0.3rem;
     transition: transform 0.3s ease-out;
-    position: relative;
     padding: 20px;
   }
   .modal-close-button {
+    font-size: 15px;
     display: flex;
     justify-content: flex-end;
   }
@@ -46,7 +50,7 @@ const CitySearchStyle = styled.div`
     justify-content: center;
   }
   .title-text {
-    color: ;
+    color: #000;
   }
   .searchcity {
     width: 700px;
@@ -115,7 +119,23 @@ const CitySearchStyle = styled.div`
   }
 `;
 
-export const CitySearch = ({ openModal, setOpenModal }) => {
+export const CitySearch = ({ setOpenModal }) => {
+  const [cities, setCities] = useState([]);
+
+  const getCity = () => {
+    axios
+      .get("https://staging.admin.haavoo.com/api/city")
+      .then((response) => {
+        console.log(response);
+        setCities(response?.data?.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => getCity(), []);
+
   return (
     <CitySearchStyle>
       <div className="city-modal-background">
@@ -124,7 +144,7 @@ export const CitySearch = ({ openModal, setOpenModal }) => {
             className="modal-close-button"
             onClick={() => setOpenModal(false)}
           >
-            <button className="close-button"></button>
+            <GrClose />
           </div>
           <div className="city-modal-body">
             <section className="search-your-city">
@@ -141,36 +161,22 @@ export const CitySearch = ({ openModal, setOpenModal }) => {
               <h3 className="title-text">Popular Cities</h3>
               <div className="city-container">
                 <div className="city-wrapper">
-                  <div className="city">
-                    <div className="city-image">
-                      <img src={img1} alt="" />
-                    </div>
-                    <div className="city-name">Ernakulam</div>
-                  </div>
-                  <div className="city">
-                    <div className="city-image">
-                      <img src={img2} alt="" />
-                    </div>
-                    <div className="city-name">Kozhikode</div>
-                  </div>
-                  <div className="city">
-                    <div className="city-image">
-                      <img src={img3} alt="" />
-                    </div>
-                    <div className="city-name">Malappuram</div>
-                  </div>
-                  <div className="city">
-                    <div className="city-image">
-                      <img src={img4} alt="" />
-                    </div>
-                    <div className="city-name">Thiruvananthapuram</div>
-                  </div>
-                  <div className="city">
-                    <div className="city-image">
-                      <img src={img5} alt="" />
-                    </div>
-                    <div className="city-name">Thissur</div>
-                  </div>
+                  {cities &&
+                    cities.length > 0 &&
+                    cities.map((city) => (
+                      <div className="city" key={(city.is_popular = 1)}>
+                        <div className="city-image">
+                          <img
+                            src={
+                              "https://staging.admin.haavoo.com/app-images/" +
+                              city.icon
+                            }
+                            alt=""
+                          />
+                        </div>
+                        <div className="city-name">{city.name}</div>
+                      </div>
+                    ))}
                 </div>
               </div>
             </section>

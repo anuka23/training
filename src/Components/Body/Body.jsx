@@ -8,12 +8,14 @@ import { CategoryList } from "../CategoryList";
 import { mobile } from "../../responsive";
 import { tab } from "../../responsive";
 import { Sort } from "../Sort";
-import { useState, useEffect } from "react";
-import { useStoreActions } from "easy-peasy";
+import { useState } from "react";
 import { Navbar } from "../Header/Navbar";
 import { NavLink, Route, Routes } from "react-router-dom";
 import { DealsList } from "../DealsList";
 import { Footer } from "../Footer/Footer";
+import { Pagination } from "../Pagination";
+import { useStoreState } from "easy-peasy";
+import { Loader } from "../Loader";
 
 const BodyStyle = styled.div`
   width: 100%;
@@ -182,25 +184,6 @@ const BodyStyle = styled.div`
     background-color: #ff9000;
   }
 
-  .product-list-page {
-    width: 100%;
-    padding: 30px 0px;
-    margin-bottom: 50px;
-    display: flex;
-    justify-content: center;
-  }
-  .product-list-page-container {
-    width: 1170px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .product-list-page-text {
-    font-family: "Open Sans", sans-serif;
-    color: #686868;
-    font-size: 14px;
-  }
-
   @media only screen and (max-width: 576px) {
     .wrapper {
       width: 540px;
@@ -223,8 +206,7 @@ const BodyStyle = styled.div`
 export const Body = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState([]);
-  const fetchBuisnesses = useStoreActions((actions) => actions.fetchBuisnesses);
-  const fetchDeals = useStoreActions((actions) => actions.fetchDeals);
+  const buisnesses = useStoreState((state) => state.list);
 
   const searchType = (value) => {
     const currentValue = checked.indexOf(value);
@@ -242,9 +224,10 @@ export const Body = () => {
   const [updatedValue, setUpdatedValue] = useState({
     categories: [""],
     areas: [""],
-    sort: "",
+    sort: [""],
     search_query: "",
     type: [""],
+    page: [],
   });
 
   const searchUpdatedType = (value) => {
@@ -271,18 +254,21 @@ export const Body = () => {
     setUpdatedValue(updatedValueNew);
   };
 
+  const searchUpdatedPage = (value) => {
+    const updatedValueNew = { ...updatedValue };
+    updatedValueNew.page = value;
+    setUpdatedValue(updatedValueNew);
+  };
+
   const sort = (value) => {
     const updatedValueNew = { ...updatedValue };
     updatedValueNew.sort = value;
     setUpdatedValue(updatedValueNew);
   };
 
-  useEffect(() => {
-    fetchBuisnesses(updatedValue);
-  }, [updatedValue]);
-
   return (
     <BodyStyle>
+      <Loader />
       <Navbar searchUpdatedInput={searchUpdatedInput} />
       <div className="filter-container-wrapper">
         <div className="filter-wrapper">
@@ -371,23 +357,30 @@ export const Body = () => {
           <div className="product-container">
             <div className="buisness-tag-container">
               <div className="buisness-tag">
-                <NavLink to="buisnesslist">Buisnesses</NavLink>
+                <NavLink id="buisness" to="buisness">
+                  Buisnesses
+                </NavLink>
                 <NavLink to="deals">Deals</NavLink>
               </div>
             </div>
 
             <Routes>
-              <Route path="buisnesslist" element={<BuisnessList />} />
-              <Route path="deals" element={<DealsList />} />
+              <Route
+                path="deals"
+                element={<DealsList updatedValue={updatedValue} />}
+              />
+              <Route
+                path="buisness"
+                element={<BuisnessList updatedValue={updatedValue} />}
+              />
             </Routes>
           </div>
         </div>
       </div>
 
       <div className="product-list-page">
-        <div className="product-list-page-container">
-          <div className="product-list-page-text">Showing page 1 of 1</div>
-          <div className="product-list-page-number"></div>
+        <div className="product-list-page-number">
+          <Pagination searchUpdatedPage={searchUpdatedPage} />
         </div>
       </div>
       <Footer />

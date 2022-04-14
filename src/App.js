@@ -1,12 +1,14 @@
+import { useStoreState } from "easy-peasy";
 import { Body } from "./Components/Body/Body";
-import { Footer } from "./Components/Footer/Footer";
-import { Navbar } from "./Components/Header/Navbar";
+import { Loader } from "./Components/Loader";
+
 import GlobalStyle from "./GlobalStyle";
 
 function App() {
   return (
     <div>
       <GlobalStyle />
+
       <Body />
     </div>
   );

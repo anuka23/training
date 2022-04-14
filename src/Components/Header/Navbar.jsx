@@ -19,7 +19,7 @@ const NavbarStyle = styled.div`
   left: 0;
   bottom: 0;
   position: relative;
-  z-index: 3;
+  z-index: 1;
   font-family: Open Sans, sans-serif;
 `;
 const Background = styled.div`
@@ -28,13 +28,13 @@ const Background = styled.div`
   background-size: cover;
   background-image: linear-gradient(180deg, #000, transparent), url(${cover});
   position: absolute;
-  z-index: 3;
+  z-index: 1;
   height: 100%;
 `;
 const Top = styled.div`
   position: relative;
   padding: 5px;
-  z-index: 3;
+  z-index: 2;
 `;
 const TopContainer = styled.div`
   display: flex;
@@ -90,7 +90,7 @@ const LocationButton = styled.button`
 `;
 const Center = styled.div`
   position: relative;
-  z-index: 3;
+  z-index: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -109,7 +109,6 @@ const Left = styled.div`
 `;
 const Logo = styled.a`
   display: flex;
-  z-index: 3;
   ${mobile({ height: "80px" })}
   ${tab({ height: "80px" })}
 `;
@@ -169,7 +168,7 @@ const Bottom = styled.div`
   width: 100%;
   position: relative;
   height: auto;
-  z-index: 3;
+  z-index: 1;
   background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;

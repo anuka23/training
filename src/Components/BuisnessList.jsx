@@ -1,6 +1,8 @@
 import styled from "styled-components/macro";
 import { useEffect } from "react";
 import { useStoreActions, useStoreState } from "easy-peasy";
+import placeholder from "../Image/placeholder.png";
+import { Loader } from "./Loader";
 
 const BuisnessListStyle = styled.div`
   .buisness-list-container {
@@ -96,13 +98,12 @@ const BuisnessListStyle = styled.div`
   }
 `;
 
-export const BuisnessList = () => {
+export const BuisnessList = ({ updatedValue }) => {
+  const status = useStoreState((state) => state.status);
   const buisnesses = useStoreState((state) => state.list);
   const fetchBuisnesses = useStoreActions((actions) => actions.fetchBuisnesses);
 
-  useEffect(() => {
-    fetchBuisnesses();
-  }, []);
+  useEffect(() => fetchBuisnesses(updatedValue), [updatedValue]);
 
   return (
     <BuisnessListStyle>
@@ -118,10 +119,12 @@ export const BuisnessList = () => {
                       <div className="buisness-image">
                         <img
                           src={
-                            "https://staging.admin.haavoo.com/app-images/" +
                             buisness?.medias[0]?.path
+                              ? "https://staging.admin.haavoo.com/app-images/" +
+                                buisness?.medias[0]?.path
+                              : placeholder
                           }
-                          alt=""
+                          alt="No Image Available"
                         />
                       </div>
                     </div>

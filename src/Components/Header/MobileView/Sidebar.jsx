@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 const SidebarStyle = styled.div`
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   top: 50px;
   left: 0;
   right: 0;
@@ -13,7 +13,7 @@ const SidebarStyle = styled.div`
   border-radius: 5px 5px 5px 5px;
 
   .sidebar-menu-item {
-    z-index: 2;
+    z-index: 3;
   }
 
   .menu-item {
