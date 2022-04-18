@@ -8,7 +8,7 @@ function App() {
   return (
     <div>
       <GlobalStyle />
-
+      <Loader />
       <Body />
     </div>
   );

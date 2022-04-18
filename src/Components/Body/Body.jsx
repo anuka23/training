@@ -8,14 +8,12 @@ import { CategoryList } from "../CategoryList";
 import { mobile } from "../../responsive";
 import { tab } from "../../responsive";
 import { Sort } from "../Sort";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "../Header/Navbar";
 import { NavLink, Route, Routes } from "react-router-dom";
 import { DealsList } from "../DealsList";
 import { Footer } from "../Footer/Footer";
 import { Pagination } from "../Pagination";
-import { useStoreState } from "easy-peasy";
-import { Loader } from "../Loader";
 
 const BodyStyle = styled.div`
   width: 100%;
@@ -203,10 +201,26 @@ const BodyStyle = styled.div`
   }
 `;
 
+const getUpdatedValue = () => {
+  const storedValue = localStorage.getItem("updatedValue");
+  if (!storedValue)
+    return {
+      categories: [""],
+      areas: [""],
+      sort: [""],
+      search_query: "",
+      type: [""],
+      page: [],
+      city: "",
+    };
+  else {
+    return JSON.parse(storedValue);
+  }
+};
+
 export const Body = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState([]);
-  const buisnesses = useStoreState((state) => state.list);
 
   const searchType = (value) => {
     const currentValue = checked.indexOf(value);
@@ -221,14 +235,7 @@ export const Body = () => {
     searchUpdatedType(newValue);
   };
 
-  const [updatedValue, setUpdatedValue] = useState({
-    categories: [""],
-    areas: [""],
-    sort: [""],
-    search_query: "",
-    type: [""],
-    page: [],
-  });
+  const [updatedValue, setUpdatedValue] = useState(getUpdatedValue);
 
   const searchUpdatedType = (value) => {
     const updatedValueNew = { ...updatedValue };
@@ -266,10 +273,25 @@ export const Body = () => {
     setUpdatedValue(updatedValueNew);
   };
 
+  const searchUpdatedCity = (value) => {
+    const updatedValueNew = { ...updatedValue };
+    updatedValueNew.city = value;
+    setUpdatedValue(updatedValueNew);
+  };
+
+  useEffect(() => {
+    localStorage.setItem("updatedValue", JSON.stringify(updatedValue));
+  }, [updatedValue]);
+
+  console.log("updated", updatedValue.city);
+
   return (
     <BodyStyle>
-      <Loader />
-      <Navbar searchUpdatedInput={searchUpdatedInput} />
+      <Navbar
+        searchUpdatedInput={searchUpdatedInput}
+        searchUpdatedCity={searchUpdatedCity}
+        updatedValue={updatedValue}
+      />
       <div className="filter-container-wrapper">
         <div className="filter-wrapper">
           <div className="filter-container">
@@ -348,7 +370,10 @@ export const Body = () => {
                   <h3>Area</h3>
                 </div>
                 <div className="area-select-option">
-                  <Area searchUpdatedAreas={searchUpdatedAreas} />
+                  <Area
+                    searchUpdatedAreas={searchUpdatedAreas}
+                    updatedValue={updatedValue}
+                  />
                 </div>
               </div>
             </div>

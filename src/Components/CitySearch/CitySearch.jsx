@@ -78,6 +78,7 @@ const CitySearchStyle = styled.div`
     background-color: #e51c1c;
     padding: 20px;
     border-radius: 8px;
+    flex-wrap: wrap;
     border: 1px solid rgba(0, 0, 0, 0.2);
   }
   .city {
@@ -86,8 +87,14 @@ const CitySearchStyle = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
-    margin: 0px 10px;
+    margin-right: 5px;
+  }
+  .popular-city-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
   }
   .city-image img {
     height: 80px;
@@ -98,29 +105,54 @@ const CitySearchStyle = styled.div`
     font-size: 15px;
   }
   .other-city {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
-  .other-city-name {
+  .other-city-container {
     display: flex;
     flex-wrap: wrap;
-    width: auto;
-    margin-left: 25px;
+    margin-left: 40px;
   }
-  .other-city-name a {
-    font-size: 13px;
-    margin-right: 120px;
+  .other-city-name {
+    display: flex;
+    width: auto;
+  }
+  .name a {
+    display: flex;
+    margin-right: 100px;
     color: #636363;
   }
-  .other-city-name a:hover {
+  .name a:hover {
     text-decoration: underline;
   }
 `;
 
-export const CitySearch = ({ setOpenModal }) => {
+export const CitySearch = ({ setOpenModal, searchCities, cityName }) => {
   const [cities, setCities] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [filteredResults, setFilteredResults] = useState([]);
+
+  const searchCity = (value) => {
+    searchCities(value);
+  };
+
+  const citySearch = (searchValue) => {
+    setSearchInput(searchValue);
+    if (searchInput !== "") {
+      const filteredData = cities.filter((item) => {
+        return Object.values(item)
+          .join("")
+          .toLowerCase()
+          .includes(searchInput.toLowerCase());
+      });
+      setFilteredResults(filteredData);
+    } else {
+      setFilteredResults(cities);
+    }
+  };
 
   const getCity = () => {
     axios
@@ -154,62 +186,109 @@ export const CitySearch = ({ setOpenModal }) => {
                   type="text"
                   placeholder="Search Your City"
                   className="searchcity"
+                  onChange={(e) => citySearch(e.target.value)}
                 />
               </div>
             </section>
+
             <section className="popular-city">
               <h3 className="title-text">Popular Cities</h3>
               <div className="city-container">
-                <div className="city-wrapper">
-                  {cities &&
-                    cities.length > 0 &&
-                    cities.map((city) => (
-                      <div className="city" key={(city.is_popular = 1)}>
-                        <div className="city-image">
-                          <img
-                            src={
-                              "https://staging.admin.haavoo.com/app-images/" +
-                              city.icon
-                            }
-                            alt=""
-                          />
+                <div
+                  className="city-wrapper"
+                  onClick={() => setOpenModal(false)}
+                >
+                  {searchInput.length > 0
+                    ? filteredResults &&
+                      filteredResults.length > 0 &&
+                      filteredResults.map((city) => (
+                        <div className="city" key={city.id}>
+                          {city.is_popular == 1 && (
+                            <div
+                              className="popular-city-container"
+                              onClick={() => searchCity(city.slug)}
+                            >
+                              <div className="city-image">
+                                <img
+                                  src={
+                                    "https://staging.admin.haavoo.com/app-images/" +
+                                    city.icon
+                                  }
+                                  alt=""
+                                />
+                              </div>
+                              <div
+                                className="city-name"
+                                onClick={() => cityName(city.name)}
+                              >
+                                {city.name}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        <div className="city-name">{city.name}</div>
-                      </div>
-                    ))}
+                      ))
+                    : cities &&
+                      cities.length > 0 &&
+                      cities.map((city) => (
+                        <div className="city" key={city.id}>
+                          {city.is_popular == 1 && (
+                            <div
+                              className="popular-city-container"
+                              onClick={() => searchCity(city.slug)}
+                            >
+                              <div className="city-image">
+                                <img
+                                  src={
+                                    "https://staging.admin.haavoo.com/app-images/" +
+                                    city.icon
+                                  }
+                                  alt=""
+                                />
+                              </div>
+                              <div
+                                className="city-name"
+                                onClick={() => cityName(city.name)}
+                              >
+                                {city.name}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
                 </div>
               </div>
             </section>
-            <section className="other-city">
+
+            <section className="other-city" onClick={() => setOpenModal(false)}>
               <h3 className="title-text">Other Cities</h3>
-              <div className="other-city-name">
-                <div className="name">
-                  <a href="">Alappuzha</a>
-                </div>
-                <div className="name">
-                  <a href="">Idukki</a>
-                </div>{" "}
-                <div className="name">
-                  <a href="">Kannur </a>
-                </div>
-                <div className="name">
-                  <a href="">Kasargod</a>
-                </div>
-                <div className="name">
-                  <a href="">Kollam</a>
-                </div>
-                <div className="name">
-                  <a href="">Kottayam</a>
-                </div>
-                <div className="name">
-                  <a href="">Palakkad</a>
-                </div>
-                <div className="name">
-                  <a href="">Pathanamthitta</a>
-                </div>
-                <div className="name">
-                  <a href="">Wayanad</a>
-                </div>
+              <div className="other-city-container">
+                {searchInput.length > 1
+                  ? filteredResults &&
+                    filteredResults.length > 0 &&
+                    filteredResults.map((city) => (
+                      <div className="other-city-name">
+                        {city.is_popular == 0 && (
+                          <div className="name">
+                            <a href="#" onClick={() => searchCity(city.slug)}>
+                              {city.name}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  : cities &&
+                    cities.length > 0 &&
+                    cities.map((city) => (
+                      <div className="other-city-name">
+                        {city.is_popular == 0 && (
+                          <div className="name">
+                            <a href="#" onClick={() => searchCity(city.slug)}>
+                              {city.name}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    ))}
               </div>
             </section>
           </div>

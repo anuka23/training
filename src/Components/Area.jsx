@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components/macro";
 import axios from "axios";
-import { useStoreActions } from "easy-peasy";
 
 const AreaStyle = styled.div`
   .area-container {
@@ -31,13 +30,15 @@ const AreaStyle = styled.div`
   }
 `;
 
-export const Area = ({ searchUpdatedAreas }) => {
+export const Area = ({ searchUpdatedAreas, updatedValue }) => {
   const [areas, setAreas] = useState([]);
   const [checked, setChecked] = useState([]);
 
   const getAreas = () => {
     axios
-      .get("https://staging.admin.haavoo.com/api/area?city=ernakulam")
+      .get(
+        `https://staging.admin.haavoo.com/api/area?city=${updatedValue.city}`
+      )
       .then((response) => {
         console.log(response);
         setAreas(response.data.data);
@@ -47,7 +48,7 @@ export const Area = ({ searchUpdatedAreas }) => {
       });
   };
 
-  useEffect(() => getAreas(), []);
+  useEffect(() => getAreas(), [areas]);
 
   const searchAreas = (value) => {
     const currentValue = checked.indexOf(value);

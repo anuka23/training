@@ -1,5 +1,4 @@
 import React from "react";
-import Loading from "../Image/__Iphone-spinner-1.gif";
 import styled from "styled-components";
 import { useStoreState } from "easy-peasy";
 import ReactLoading from "react-loading";

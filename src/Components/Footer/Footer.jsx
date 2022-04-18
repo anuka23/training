@@ -123,6 +123,8 @@ const FooterStyle = styled.div`
   }
   .mobile-app-container {
     display: flex;
+    justify-content: center;
+    align-items: center;
     padding-top: 40px;
     flex-direction: column;
     font-size: 22px;
@@ -134,7 +136,7 @@ const FooterStyle = styled.div`
     justify-content: center;
   }
   .mobile-app-container img {
-    width: 95%;
+    width: auto;
     margin-top: 10px;
   }
   .copyright-container {
@@ -162,8 +164,10 @@ const FooterStyle = styled.div`
     text-decoration: underline;
   }
 
-  @media only screen and (max-width: 576px) {
+  @media only screen and (max-width: 427px) {
     .container {
+      width: 400px;
+      align-items: center;
       flex-direction: column-reverse;
       margin-left: 20px;
     }

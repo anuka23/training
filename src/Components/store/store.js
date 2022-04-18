@@ -20,7 +20,7 @@ const store = createStore({
     console.log("payload", payload);
     actions.setStatus(false);
     const { data } = await axios.get(
-      `https://staging.admin.haavoo.com/api/business?city=&area=${payload.areas}&search_query=${payload.search_query}&page=${payload.page}&type=${payload.type}&category=${payload.categories}&sort=${payload.sort}&lat=19.1102976&lng=72.8793088`
+      `https://staging.admin.haavoo.com/api/business?city=${payload.city}&area=${payload.areas}&search_query=${payload.search_query}&page=${payload.page}&type=${payload.type}&category=${payload.categories}&sort=${payload.sort}&lat=19.1102976&lng=72.8793088`
     );
     actions.saveBuisnesses(data?.data?.data);
     actions.setLength(data?.data?.total);
@@ -33,6 +33,7 @@ const store = createStore({
   }),
   fetchDeals: thunk(async (actions, payload) => {
     console.log("payload", payload);
+    actions.setStatus(false);
     const { data } = await axios.get(
       `https://staging.admin.haavoo.com/api/deals?city=ernakulam&area=${payload.areas}&query=${payload.search_query}&page=1&type=${payload.type}&category=${payload.categories}&sort=${payload.sort}&pageSize=`
     );

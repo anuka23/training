@@ -268,7 +268,11 @@ const Bottom = styled.div`
   }
 `;
 
-export const Navbar = ({ searchUpdatedInput }) => {
+export const Navbar = ({
+  searchUpdatedInput,
+  searchUpdatedCity,
+  updatedValue,
+}) => {
   const [openModal, setOpenModal] = useState(false);
   var searchValue;
 
@@ -278,6 +282,10 @@ export const Navbar = ({ searchUpdatedInput }) => {
 
   const searchBuisnesses = () => {
     searchUpdatedInput(searchValue);
+  };
+
+  const searchCities = (value) => {
+    searchUpdatedCity(value);
   };
 
   return (
@@ -293,11 +301,15 @@ export const Navbar = ({ searchUpdatedInput }) => {
               </Icon>
               <Desc>Select Location</Desc>
               <LocationButton onClick={() => setOpenModal(true)}>
-                Ernakulam
+                {updatedValue.city}
                 <IoMdArrowDropdown />
               </LocationButton>
               {openModal && (
-                <CitySearch openModal={openModal} setOpenModal={setOpenModal} />
+                <CitySearch
+                  openModal={openModal}
+                  setOpenModal={setOpenModal}
+                  searchCities={searchCities}
+                />
               )}
             </Location>
 
